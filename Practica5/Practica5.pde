@@ -7,6 +7,8 @@ boolean cameraOn = false;
 boolean lightsOn = false;
 int dayTime = 1;
 boolean lamp = false;
+boolean help;
+PVector actCamPos;
 QueasyCam cam;
 
 void setup(){
@@ -21,6 +23,11 @@ void setup(){
   scaleObjs();
   bombilla = createShape(SPHERE,42);
   smooth(4);
+  help = true;
+  cam.controllable = false;
+  cam.pan=0;
+  cam.tilt=0;
+  cam.position = new PVector(0,0,0);
 }
 
 void draw(){
@@ -30,14 +37,46 @@ void draw(){
   //camera(width/2,-height/2,2000, width/2,height/2,0,0,1,0);
   translate(width/2,height/2,0);
   //lights();
-  roomLamp();
+  if(help){
+    textAlign(CENTER);
+    drawHelp();
+  }
+  else{ 
+    
+    drawScene();
+  }
+ 
+  
+}
+void drawHelp(){
+  textSize(50);
+  text("Instrucciones",0,-400,0);
+  textSize(30);
+  text("Movimiento",0,-300,0);
+  textSize(25);
+  text("Usa A,W,S y D para moverte y el ratón para apuntar",0,-250,0);
+  text("Q = bajar ; E = subir",0,-220,0);
+  textSize(30);
+  text("Interacción",0,-180,0);
+  textSize(25);
+  text("1 = Dia; 2 = Tarde ; 3 = Noche ",0,-150,0);
+  text("L = Lampara mesa ; N = lampara techo ",0,-120,0);
+  
+  text("Para una mejor vista, por favor ponga pantalla completa",0,-80,0);
+  
+}
+void drawScene(){
+  cam.controllable = true;
   if (dayTime == 1)dayMode();
   else if(dayTime == 2) eveningMode();
   else  nightMode();
   // Pon la luz lo primero de todo o no se verá afectado en los objetos.
   //sphere(50);
-  createCeiling();
   setLights();
+  roomLamp();
+  createCeiling();
+  
+  
   
   pushMatrix();
   rotateX(radians(180));
@@ -54,12 +93,14 @@ void draw(){
   shape(mesa);
   popMatrix();
   
-  setLights();
+
   createFloor();
   if(lamp)bulbLight();
+  if(lightsOn){ ambientLight(255,255,255);bombilla.setFill(color(100,100,100));}
+  else ambientLight(0,0,0);
+  translate(0,-900,0);
+  shape(bombilla);
 }
-
-
 void scaleObjs(){
   
   mesa.scale(5);
@@ -100,6 +141,7 @@ void keyReleased(){
   if (key == ' ') cameraOn = !cameraOn; 
   if (key == 'N' || key == 'n') lightsOn = !lightsOn;
   if (key == 'L' || key == 'l') lamp = !lamp;
+  if (keyCode == ENTER) help = false;
   if (key == '1') dayTime = 1;
   if (key == '2') dayTime = 2;
   if (key == '3') dayTime = 3;
@@ -154,18 +196,18 @@ void eveningMode(){
 }
 
 void bulbLight(){
+  pushMatrix();
   translate(0,-395,+110);
   ambientLight(255,255,100);
   bombilla.setFill(color(255,255,200));
   shape(bombilla);
+  popMatrix();
+  
 }
 void roomLamp(){
   pushMatrix();
   translate(0,-900,0);
-  /*if(!lightsOn) fill(10,10,10);
-  else fill(255,255,255);*/
-  sphere(30);
-  if (lightsOn) pointLight(100, 100, 100, 0, 1, 0);
+  if (lightsOn) pointLight(100, 100, 100, 0, 0, 0);
   popMatrix();
   
 }
