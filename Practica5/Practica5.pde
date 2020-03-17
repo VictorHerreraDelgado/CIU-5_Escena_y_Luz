@@ -18,10 +18,10 @@ void setup(){
   noStroke();
   sphereDetail(60);
   lamparaMesa = loadShape("lampara escritorio.obj");
-  mesa = loadShape("table.obj");
-  floorImg = loadImage("floor.png");
-  scaleObjs();
   bombilla = createShape(SPHERE,42);
+  mesa = loadShape("table.obj");
+  mesa.scale(5);
+  floorImg = loadImage("floor.png");
   smooth(4);
   help = true;
   cam.controllable = false;
@@ -33,8 +33,6 @@ void setup(){
 void draw(){
   background(51);
   textureMode(NORMAL);
-  
-  //camera(width/2,-height/2,2000, width/2,height/2,0,0,1,0);
   translate(width/2,height/2,0);
   //lights();
   if(help){
@@ -42,7 +40,6 @@ void draw(){
     drawHelp();
   }
   else{ 
-    
     drawScene();
   }
  
@@ -62,7 +59,9 @@ void drawHelp(){
   text("1 = Dia; 2 = Tarde ; 3 = Noche ",0,-150,0);
   text("L = Lampara mesa ; N = lampara techo ",0,-120,0);
   
-  text("Para una mejor vista, por favor ponga pantalla completa",0,-80,0);
+  text("Para una mejor vista, por favor ponga pantalla completa",0,-50,0);
+  textSize(35);
+  text("Pulsa enter para continuar",0,0,0);
   
 }
 void drawScene(){
@@ -70,19 +69,14 @@ void drawScene(){
   if (dayTime == 1)dayMode();
   else if(dayTime == 2) eveningMode();
   else  nightMode();
-  // Pon la luz lo primero de todo o no se verá afectado en los objetos.
-  //sphere(50);
   setLights();
   roomLamp();
   createCeiling();
-  
-  
-  
+
   pushMatrix();
   rotateX(radians(180));
   rotateY(radians(180));
   shape(lamparaMesa);
-  //sphere(10);
   popMatrix();
   
   pushMatrix();
@@ -93,7 +87,6 @@ void drawScene(){
   shape(mesa);
   popMatrix();
   
-
   createFloor();
   if(lamp)bulbLight();
   if(lightsOn){ ambientLight(255,255,255);bombilla.setFill(color(100,100,100));}
@@ -103,34 +96,21 @@ void drawScene(){
 }
 void scaleObjs(){
   
-  mesa.scale(5);
-  
-  
 }
 void setLights(){
  
- //
  pushMatrix();
  translate(0,-350,+130);
- //emissive(200,200,50);
- //shininess(-100);
- //emissive(255,255,255);
  if(lamp){
-   //pointLight(200,200,100,0,1,0);
    pushMatrix();
    translate(0,-10,15);
-   ///pointLight(200,200,100,0,0,0);
    spotLight(200,200,100,0,0,0,   0,1,1 , radians(90),1);
    spotLight(200,200,100,0,20,10,   0,-1.30,-1 , radians(65),1);
    popMatrix();
    
  }
  else bombilla.setFill(color(50,50,10));
- 
- 
- //spotLight(200,200,100,0,0,0,0,50,200,radians(90),-100); 
- 
- 
+
  translate(0,350,-130);
  popMatrix();
  
@@ -179,7 +159,6 @@ void createFloor(){
 }
 
 
-
 void nightMode(){
   ambientLight(0,0,10);
   directionalLight(30, 30, 30, 0, 1, 1);
@@ -187,7 +166,7 @@ void nightMode(){
 
 void dayMode(){
   ambientLight(200,200,200);
-  directionalLight(255,255, 255, 0, 1, 0);
+  directionalLight(255,255, 255, 0, 1, 1);
 }
 
 void eveningMode(){
